@@ -1,0 +1,11 @@
+CC = gcc
+OPT = -g -O3
+WARN = -Wall
+CFLAGS = $(OPT) $(WARN)
+OBJECTS = main.o data.o io.o
+
+excer2: $(OBJECTS)
+	$(CC) $(CFLAGS) -o excer2 $(OBJECTS)
+
+clean:
+	rm -f *.o
