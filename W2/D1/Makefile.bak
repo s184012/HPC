@@ -1,0 +1,35 @@
+CC	= gcc
+OPT	= -g -ffast-math -fopenmp
+CHIP = 
+ISA	= 
+DEFS	= 
+LIBS	= -lm
+CFLAGS  = $(OPT) $(CHIP) $(ISA) $(DEFS) $(XOPT)
+
+SOURCES = calc_pi.c matrix_fns.c io.c
+OBJECTS = $(SOURCES:.c=.o)
+TARGET_PI = calc_pi
+TARGET_MXV = calc_mxv
+TARGETS = TARGET_PI
+
+all: 
+	$(MAKE) $(MAKEFLAGS) clean
+	$(MAKE) $(MAKEFLAGS) $(TARGET_PI)
+	$(MAKE) $(MAKEFLAGS) clean
+	$(MAKE) $(MAKEFLAGS) $(TARGET_MXV)
+	
+
+$(TARGET_PI): clean $(OBJECTS)
+	$(CC) -o $@ $(CFLAGS) $(OBJECTS) $(LIBS)
+
+$(TARGET_MXV): clean $(OBJECTS)
+	$(CC) -o $@ $(CFLAGS) $(OBJECTS) $(LIBS)
+
+clean:
+	@/bin/rm -f $(OBJECTS) core
+
+realclean: clean
+	@/bin/rm -f $(TARGETS)
+
+
+# DO NOT DELETE
