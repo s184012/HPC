@@ -24,7 +24,7 @@ module load studio
 EXECUTABLE=mandelbrot
 
 # define any command line options for your executable here
-# EXECOPTS=
+EXECOPTS=OMP_NUM_THREAD=20
 
 # set some OpenMP variables here
 #

@@ -7,32 +7,41 @@ mandel(int disp_width, int disp_height, int *array, int max_iter) {
 
     scale_real = 3.5 / (double)disp_width;
     scale_imag = 3.5 / (double)disp_height;
-
-    for(i = 0; i < disp_width; i++) {
+	
+	// #pragma omp parallel for default(none)\
+	// 		shared(disp_width, disp_height, array, max_iter, scale_real, scale_imag, x, y, u, v, u2, v2)\
+	// 		private(i, j, iter)\
+	// 		schedule(dynamic,50)
+	for(i = 0; i < disp_width; i++) {
 
 	x = ((double)i * scale_real) - 2.25; 
 
 	for(j = 0; j < disp_height; j++) {
 	    y = ((double)j * scale_imag) - 1.75; 
 
-	    u    = 0.0;
+	#pragma omp single
+	{
+		u    = 0.0;
 	    v    = 0.0;
 	    u2   = 0.0;
 	    v2   = 0.0;
 	    iter = 0;
 
 	    while ( u2 + v2 < 4.0 &&  iter < max_iter ) {
-		v = 2 * v * u + y;
-		u = u2 - v2 + x;
-		u2 = u*u;
-		v2 = v*v;
-		iter = iter + 1;
+		#pragma omp task
+		{
+			v = 2 * v * u + y;
+			u = u2 - v2 + x;
+			u2 = u*u;
+			v2 = v*v;
+			iter += 1;
+		}
 	    }
-
+	}
 	    // if we exceed max_iter, reset to zero
 	    iter = iter == max_iter ? 0 : iter;
 
 	    array[i*disp_height + j] = iter;
 	}
-    }
+	}
 }
